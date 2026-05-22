@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lernmaterial Generator</title>
+<style>
+  /* ── Schriftarten von Google Fonts ── */
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap');
+
+  /* ── CSS-Variablen: Farben zentral definiert ── */
+  :root {
+    --bg: #0f0e17;
+    --surface: #1a1829;
+    --card: #221f35;
+    --accent: #e8c547;
+    --accent2: #7c6af7;
+    --text: #fffffe;
+    --muted: #a7a9be;
+    --border: rgba(255,255,255,0.08);
+    --success: #4caf81;
+    --danger: #e06c75;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  /* ── Hintergrund-Deko ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse at 20% 20%, rgba(124,106,247,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 80%, rgba(232,197,71,0.08) 0%, transparent 60%);
+    pointer-events: none; z-index: 0;
+  }
+
+  .container { max-width: 860px; margin: 0 auto; position: relative; z-index: 1; }
+
+  /* ── Header ── */
+  header { text-align: center; margin-bottom: 3rem; }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+  }
+  header p { color: var(--muted); font-size: 1rem; }
+
+  /* ── Tabs ── */
+  .tabs { display: flex; gap: 0.5rem; margin-bottom: 2rem; }
+  .tab-btn {
+    flex: 1; padding: 0.75rem 1rem;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--muted); border-radius: 10px; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+    transition: all 0.2s;
+  }
+  .tab-btn.active {
+    background: linear-gradient(135deg, var(--accent2), #5b4fd4);
+    border-color: var(--accent2); color: #fff;
+  }
+  .tab-btn:hover:not(.active) { border-color: var(--accent2); color: var(--text); }
+
+  /* ── Tab-Inhalte ── */
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* ── Karten ── */
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem;
+  }
+  .card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem; color: var(--accent); margin-bottom: 1rem;
+  }
+
+  /* ── JSON-Editor ── */
+  textarea {
+    width: 100%; min-height: 200px;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text); border-radius: 10px; padding: 1rem;
+    font-family: 'Courier New', monospace; font-size: 0.85rem;
+    resize: vertical; outline: none; line-height: 1.6;
+    transition: border-color 0.2s;
+  }
+  textarea:focus { border-color: var(--accent2); }
+
+  /* ── Buttons ── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.75rem 1.5rem; border-radius: 10px; border: none;
+    font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+    font-weight: 500; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent2), #5b4fd4); color: #fff;
+  }
+  .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+  .btn-accent {
+    background: linear-gradient(135deg, var(--accent), #d4a017); color: #1a1510;
+  }
+  .btn-accent:hover { opacity: 0.85; transform: translateY(-1px); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* ── Upload-Bereich ── */
+  .upload-zone {
+    border: 2px dashed var(--accent2); border-radius: 12px;
+    padding: 2.5rem; text-align: center; cursor: pointer;
+    transition: all 0.2s; position: relative; overflow: hidden;
+  }
+  .upload-zone:hover, .upload-zone.dragover {
+    background: rgba(124,106,247,0.08); border-color: var(--accent);
+  }
+  .upload-zone input[type=file] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer;
+    width: 100%; height: 100%;
+  }
+  .upload-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+  .upload-zone p { color: var(--muted); font-size: 0.9rem; }
+  .upload-zone strong { color: var(--accent2); }
+
+  /* ── Themen-Karten (aus JSON) ── */
+  .topics-grid { display: grid; gap: 1rem; }
+  .topic-item {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.25rem; cursor: pointer;
+    transition: all 0.2s; display: flex; align-items: center; gap: 1rem;
+  }
+  .topic-item:hover { border-color: var(--accent2); transform: translateX(4px); }
+  .topic-item.selected { border-color: var(--accent); background: rgba(232,197,71,0.08); }
+  .topic-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent2), #5b4fd4);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; flex-shrink: 0;
+  }
+  .topic-info h3 { font-size: 1rem; margin-bottom: 0.2rem; }
+  .topic-info p { color: var(--muted); font-size: 0.85rem; }
+
+  /* ── Fragen-Bereich ── */
+  .question-block {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem;
+    animation: fadeIn 0.3s ease;
+  }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform:none; } }
+
+  .question-number {
+    font-size: 0.75rem; font-weight: 500; color: var(--accent2);
+    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem;
+  }
+  .question-text { font-size: 1rem; margin-bottom: 1rem; line-height: 1.6; }
+
+  /* ── Antwortoptionen ── */
+  .options { display: grid; gap: 0.5rem; }
+  .option-btn {
+    text-align: left; padding: 0.75rem 1rem;
+    background: var(--bg); border: 1px solid var(--border);
+    color: var(--text); border-radius: 8px; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+    transition: all 0.15s;
+  }
+  .option-btn:hover { border-color: var(--accent2); background: rgba(124,106,247,0.1); }
+  .option-btn.correct { border-color: var(--success); background: rgba(76,175,129,0.15); color: var(--success); }
+  .option-btn.wrong { border-color: var(--danger); background: rgba(224,108,117,0.15); color: var(--danger); }
+  .option-btn:disabled { cursor: default; }
+
+  /* ── Erklärung nach Antwort ── */
+  .explanation {
+    margin-top: 1rem; padding: 0.75rem 1rem;
+    background: rgba(232,197,71,0.08); border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0; color: var(--muted); font-size: 0.9rem;
+    display: none;
+  }
+  .explanation.show { display: block; }
+
+  /* ── Ladeanimation ── */
+  .loader {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 1.5rem; color: var(--muted);
+  }
+  .spinner {
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 3px solid var(--border); border-top-color: var(--accent2);
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── Score-Anzeige ── */
+  .score-banner {
+    text-align: center; padding: 2rem;
+    background: linear-gradient(135deg, rgba(124,106,247,0.2), rgba(232,197,71,0.1));
+    border: 1px solid var(--accent2); border-radius: 16px; margin-top: 1.5rem;
+  }
+  .score-banner h2 { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--accent); }
+  .score-banner p { color: var(--muted); margin-top: 0.5rem; }
+
+  /* ── Hilfstexte / Fehler ── */
+  .hint { color: var(--muted); font-size: 0.85rem; margin-top: 0.5rem; }
+  .error { color: var(--danger); font-size: 0.9rem; margin-top: 0.5rem; padding: 0.75rem; background: rgba(224,108,117,0.1); border-radius: 8px; }
+
+  /* ── Progress Bar ── */
+  .progress-bar {
+    height: 4px; background: var(--border); border-radius: 2px; margin-bottom: 1.5rem;
+  }
+  .progress-fill {
+    height: 100%; background: linear-gradient(90deg, var(--accent2), var(--accent));
+    border-radius: 2px; transition: width 0.4s ease;
+  }
+
+  .row { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; }
+  .badge {
+    padding: 0.3rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 500;
+    background: rgba(124,106,247,0.2); color: var(--accent2);
+  }
+
+  #pdf-status { margin-top: 1rem; }
+  #quiz-section { margin-top: 1.5rem; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ═══════════════════════════════════
+       HEADER
+  ═══════════════════════════════════ -->
+  <header>
+    <h1>📚 Lernmaterial Generator</h1>
+    <p>Lade vorgefertigtes Material oder deine eigene PDF – und lerne mit KI-generierten Fragen</p>
+  </header>
+
+  <!-- ═══════════════════════════════════
+       TABS: JSON-Themen | PDF Upload
+  ═══════════════════════════════════ -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('json')">📋 JSON-Themen</button>
+    <button class="tab-btn" onclick="switchTab('pdf')">📄 Eigene PDF hochladen</button>
+    <button class="tab-btn" onclick="switchTab('editor')">✏️ JSON bearbeiten</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       TAB 1: Vorgefertigte JSON-Themen
+  ══════════════════════════════════════════ -->
+  <div id="tab-json" class="tab-content active">
+    <div class="card">
+      <h2>🎯 Thema auswählen</h2>
+      <p class="hint" style="margin-bottom:1rem;">Wähle ein Thema aus dem JSON – das Programm stellt dir dazu Fragen.</p>
+      <div class="topics-grid" id="topics-list">
+        <!-- Wird per JavaScript befüllt -->
+      </div>
+    </div>
+
+    <div id="json-quiz-section"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       TAB 2: PDF hochladen → KI generiert Fragen
+  ══════════════════════════════════════════ -->
+  <div id="tab-pdf" class="tab-content">
+    <div class="card">
+      <h2>📄 PDF hochladen</h2>
+      <p class="hint" style="margin-bottom:1rem;">
+        Lade eine beliebige PDF hoch (z.B. Mitschrift, Skriptum). Die KI liest den Inhalt
+        und erstellt automatisch Lernfragen daraus.
+      </p>
+
+      <div class="upload-zone" id="upload-zone">
+        <input type="file" id="pdf-input" accept=".pdf" onchange="handlePdfUpload(event)">
+        <div class="upload-icon">📂</div>
+        <p><strong>PDF hier ablegen</strong> oder klicken zum Auswählen</p>
+        <p style="margin-top:0.3rem; font-size:0.8rem;">Nur .pdf Dateien • Max. ~10 Seiten empfohlen</p>
+      </div>
+
+      <div id="pdf-status"></div>
+    </div>
+
+    <div id="pdf-quiz-section"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       TAB 3: JSON selbst bearbeiten
+  ══════════════════════════════════════════ -->
+  <div id="tab-editor" class="tab-content">
+    <div class="card">
+      <h2>✏️ JSON-Lernmaterial bearbeiten</h2>
+      <p class="hint" style="margin-bottom:1rem;">
+        Hier kannst du das Lernmaterial direkt anpassen. Das Format:<br>
+        <code style="color:var(--accent2)">topics</code> = Liste von Themen,
+        jedes mit <code style="color:var(--accent2)">title</code>,
+        <code style="color:var(--accent2)">icon</code>,
+        <code style="color:var(--accent2)">description</code> und
+        <code style="color:var(--accent2)">questions</code>.
+      </p>
+      <textarea id="json-editor" spellcheck="false"></textarea>
+      <div style="margin-top:1rem;" class="row">
+        <button class="btn btn-primary" onclick="applyJsonEdit()">✅ Änderungen übernehmen</button>
+        <button class="btn btn-accent" onclick="resetJson()">🔄 Zurücksetzen</button>
+        <span id="json-status" class="hint"></span>
+      </div>
+    </div>
+
+    <!-- ══ JSON-Struktur Erklärung ══ -->
+    <div class="card">
+      <h2>📖 JSON-Struktur erklärt</h2>
+      <pre style="background:var(--surface);padding:1rem;border-radius:8px;font-size:0.82rem;color:var(--muted);overflow-x:auto;line-height:1.7">{
+  "topics": [
+    {
+      "title": "🔥 Name des Themas",        // Anzeigename
+      "icon": "💡",                          // Emoji-Icon
+      "description": "Kurze Beschreibung",  // Kleiner Infotext
+      "questions": [
+        {
+          "question": "Frage?",             // Die Frage
+          "options": ["A", "B", "C", "D"],  // 4 Antwortmöglichkeiten
+          "correct": 0,                     // Index der richtigen Antwort (0=A)
+          "explanation": "Warum A richtig"  // Erklärung nach der Antwort
+        }
+      ]
+    }
+  ]
+}</pre>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<script>
+// ════════════════════════════════════════════════════════════
+//  STANDARD-LERNMATERIAL (JSON)
+//  Du kannst dieses Objekt beliebig erweitern!
+// ════════════════════════════════════════════════════════════
+const DEFAULT_DATA = {
+  "topics": [
+    {
+      "title": "SQL Grundlagen",
+      "icon": "🗄️",
+      "description": "SELECT, WHERE, JOIN und Aggregatfunktionen",
+      "questions": [
+        {
+          "question": "Was macht die SQL-Klausel GROUP BY?",
+          "options": [
+            "Sortiert die Ergebnisse alphabetisch",
+            "Fasst Zeilen mit gleichem Wert einer Spalte zusammen",
+            "Verknüpft zwei Tabellen miteinander",
+            "Löscht doppelte Zeilen"
+          ],
+          "correct": 1,
+          "explanation": "GROUP BY gruppiert Zeilen mit dem gleichen Wert in einer oder mehreren Spalten, damit Aggregatfunktionen wie COUNT() oder SUM() auf die Gruppen angewendet werden können."
+        },
+        {
+          "question": "Welche Aggregatfunktion gibt die Anzahl der Zeilen zurück?",
+          "options": ["SUM()", "AVG()", "COUNT()", "MAX()"],
+          "correct": 2,
+          "explanation": "COUNT() zählt die Anzahl der Zeilen. COUNT(*) zählt alle Zeilen, COUNT(spalte) ignoriert NULL-Werte."
+        },
+        {
+          "question": "Was ist der Unterschied zwischen WHERE und HAVING?",
+          "options": [
+            "Kein Unterschied, beide machen dasselbe",
+            "WHERE filtert vor GROUP BY, HAVING filtert danach",
+            "HAVING filtert vor GROUP BY, WHERE danach",
+            "WHERE gilt nur für Strings, HAVING für Zahlen"
+          ],
+          "correct": 1,
+          "explanation": "WHERE filtert einzelne Zeilen BEVOR sie gruppiert werden. HAVING filtert bereits gruppierte Ergebnisse – deshalb kann man in HAVING Aggregatfunktionen verwenden."
+        },
+        {
+          "question": "Welcher JOIN gibt nur Zeilen zurück, die in BEIDEN Tabellen einen Treffer haben?",
+          "options": ["LEFT JOIN", "RIGHT JOIN", "FULL OUTER JOIN", "INNER JOIN"],
+          "correct": 3,
+          "explanation": "INNER JOIN gibt nur die Schnittmenge zurück – Zeilen, für die es in beiden Tabellen einen passenden Eintrag gibt."
+        }
+      ]
+    },
+    {
+      "title": "Java OOP",
+      "icon": "☕",
+      "description": "Klassen, Vererbung, Interfaces & abstrakte Klassen",
+      "questions": [
+        {
+          "question": "Was ist der Unterschied zwischen einer abstrakten Klasse und einem Interface?",
+          "options": [
+            "Kein Unterschied, beides ist gleich",
+            "Abstrakte Klassen können Konstruktoren und Felder haben, Interfaces (vor Java 8) nur abstrakte Methoden",
+            "Interfaces können nie implementiert werden",
+            "Abstrakte Klassen werden mit 'interface' deklariert"
+          ],
+          "correct": 1,
+          "explanation": "Abstrakte Klassen können Felder, Konstruktoren und implementierte Methoden enthalten. Interfaces definieren einen Vertrag (Methoden ohne Körper). Eine Klasse kann mehrere Interfaces implementieren, aber nur eine Klasse erben."
+        },
+        {
+          "question": "Was passiert, wenn man versucht, ein Objekt einer abstrakten Klasse direkt zu erstellen?",
+          "options": [
+            "Es funktioniert normal",
+            "Es wird eine Warnung ausgegeben",
+            "Der Compiler gibt einen Fehler aus",
+            "Das Objekt wird als null erstellt"
+          ],
+          "correct": 2,
+          "explanation": "Abstrakte Klassen können nicht direkt instanziiert werden. Man muss eine Unterklasse erstellen, die alle abstrakten Methoden implementiert."
+        },
+        {
+          "question": "Was bedeutet das Schlüsselwort 'super' in Java?",
+          "options": [
+            "Bezieht sich auf die aktuelle Klasse",
+            "Ruft eine statische Methode auf",
+            "Bezieht sich auf die Elternklasse (Superklasse)",
+            "Markiert eine finale Methode"
+          ],
+          "correct": 2,
+          "explanation": "'super' verweist auf die direkte Elternklasse. super() ruft den Eltern-Konstruktor auf, super.methode() ruft eine überschriebene Methode der Elternklasse auf."
+        }
+      ]
+    },
+    {
+      "title": "HTML & CSS",
+      "icon": "🌐",
+      "description": "Webdesign Grundlagen: Box-Model, Flexbox & mehr",
+      "questions": [
+        {
+          "question": "Was beschreibt das CSS Box-Model?",
+          "options": [
+            "Ein 3D-Modell für Webseiten",
+            "Content, Padding, Border und Margin um jedes Element",
+            "Die Art, wie Farben im Browser angezeigt werden",
+            "Die Reihenfolge von HTML-Tags"
+          ],
+          "correct": 1,
+          "explanation": "Das Box-Model beschreibt den Aufbau um jedes HTML-Element: Content (Inhalt) → Padding (Innenabstand) → Border (Rahmen) → Margin (Außenabstand)."
+        },
+        {
+          "question": "Welche Flexbox-Eigenschaft richtet Elemente entlang der Hauptachse aus?",
+          "options": ["align-items", "justify-content", "flex-wrap", "align-self"],
+          "correct": 1,
+          "explanation": "justify-content steuert die Ausrichtung entlang der Hauptachse (horizontal bei flex-direction: row). align-items steuert die Querachse."
+        }
+      ]
+    }
+  ]
+};
+
+// ════════════════════════════════════════════════════════════
+//  GLOBALE VARIABLEN
+// ════════════════════════════════════════════════════════════
+let currentData = JSON.parse(JSON.stringify(DEFAULT_DATA)); // Deep Copy
+let currentAnswers = {};   // Speichert gewählte Antworten
+
+// ════════════════════════════════════════════════════════════
+//  INITIALISIERUNG: Beim Laden der Seite
+// ════════════════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  renderTopics();
+  document.getElementById('json-editor').value = JSON.stringify(currentData, null, 2);
+  setupDragDrop();
+});
+
+// ════════════════════════════════════════════════════════════
+//  TAB WECHSELN
+// ════════════════════════════════════════════════════════════
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    b.classList.toggle('active', ['json','pdf','editor'][i] === name);
+  });
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+// ════════════════════════════════════════════════════════════
+//  THEMEN-LISTE RENDERN (aus currentData.topics)
+// ════════════════════════════════════════════════════════════
+function renderTopics() {
+  const list = document.getElementById('topics-list');
+  list.innerHTML = '';
+
+  currentData.topics.forEach((topic, idx) => {
+    const div = document.createElement('div');
+    div.className = 'topic-item';
+    div.innerHTML = `
+      <div class="topic-icon">${topic.icon || '📌'}</div>
+      <div class="topic-info">
+        <h3>${topic.title}</h3>
+        <p>${topic.description || ''} <span class="badge">${topic.questions.length} Fragen</span></p>
+      </div>
+    `;
+    div.onclick = () => startJsonQuiz(idx);
+    list.appendChild(div);
+  });
+}
+
+// ════════════════════════════════════════════════════════════
+//  JSON-QUIZ STARTEN
+// ════════════════════════════════════════════════════════════
+function startJsonQuiz(topicIdx) {
+  // Selektiertes Thema hervorheben
+  document.querySelectorAll('.topic-item').forEach((el, i) => {
+    el.classList.toggle('selected', i === topicIdx);
+  });
+
+  const topic = currentData.topics[topicIdx];
+  currentAnswers = {};
+  renderQuiz(topic.questions, 'json-quiz-section');
+}
+
+// ════════════════════════════════════════════════════════════
+//  QUIZ RENDERN (sowohl für JSON als auch PDF)
+//  questions = Array von { question, options, correct, explanation }
+//  containerId = ID des Ziel-Elements
+// ════════════════════════════════════════════════════════════
+function renderQuiz(questions, containerId) {
+  const container = document.getElementById(containerId);
+  let html = `
+    <div class="progress-bar"><div class="progress-fill" id="progress-${containerId}" style="width:0%"></div></div>
+  `;
+
+  questions.forEach((q, qi) => {
+    html += `
+      <div class="question-block" id="qblock-${containerId}-${qi}">
+        <div class="question-number">Frage ${qi + 1} von ${questions.length}</div>
+        <div class="question-text">${q.question}</div>
+        <div class="options">
+          ${q.options.map((opt, oi) => `
+            <button class="option-btn"
+              onclick="checkAnswer('${containerId}', ${qi}, ${oi}, ${q.correct}, ${questions.length})"
+              id="opt-${containerId}-${qi}-${oi}">
+              <span style="color:var(--accent2);font-weight:600;margin-right:0.5rem;">${['A','B','C','D'][oi]}.</span>
+              ${opt}
+            </button>
+          `).join('')}
+        </div>
+        <div class="explanation" id="exp-${containerId}-${qi}">
+          💡 <strong>Erklärung:</strong> ${q.explanation || ''}
+        </div>
+      </div>
+    `;
+  });
+
+  html += `<div id="score-${containerId}"></div>`;
+  container.innerHTML = html;
+
+  // Sanftes Scrollen zum Quiz
+  container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ════════════════════════════════════════════════════════════
+//  ANTWORT PRÜFEN
+// ════════════════════════════════════════════════════════════
+function checkAnswer(containerId, qi, chosen, correct, total) {
+  // Verhindert doppeltes Antworten
+  if (currentAnswers[`${containerId}-${qi}`] !== undefined) return;
+  currentAnswers[`${containerId}-${qi}`] = chosen;
+
+  // Alle Buttons in dieser Frage deaktivieren
+  for (let i = 0; i < 4; i++) {
+    const btn = document.getElementById(`opt-${containerId}-${qi}-${i}`);
+    if (!btn) continue;
+    btn.disabled = true;
+    if (i === correct) btn.classList.add('correct');
+    else if (i === chosen && chosen !== correct) btn.classList.add('wrong');
+  }
+
+  // Erklärung einblenden
+  document.getElementById(`exp-${containerId}-${qi}`)?.classList.add('show');
+
+  // Fortschrittsbalken aktualisieren
+  const answered = Object.keys(currentAnswers).filter(k => k.startsWith(containerId)).length;
+  const pct = (answered / total) * 100;
+  const bar = document.getElementById(`progress-${containerId}`);
+  if (bar) bar.style.width = pct + '%';
+
+  // Wenn alle beantwortet → Score anzeigen
+  if (answered === total) showScore(containerId, total);
+}
+
+// ════════════════════════════════════════════════════════════
+//  ERGEBNIS ANZEIGEN
+// ════════════════════════════════════════════════════════════
+function showScore(containerId, total) {
+  // Richtige Antworten zählen
+  // Wir brauchen die Fragen-Daten → wir lesen die "correct"-Buttons
+  let correct = 0;
+  for (let qi = 0; qi < total; qi++) {
+    // Finde den Button der als 'correct' markiert wurde und ob er auch 'selected' war
+    for (let oi = 0; oi < 4; oi++) {
+      const btn = document.getElementById(`opt-${containerId}-${qi}-${oi}`);
+      if (btn && btn.classList.contains('correct') && currentAnswers[`${containerId}-${qi}`] === oi) {
+        correct++;
+      }
+    }
+  }
+
+  const pct = Math.round((correct / total) * 100);
+  const emoji = pct >= 80 ? '🏆' : pct >= 60 ? '👍' : '📚';
+  const msg = pct >= 80 ? 'Ausgezeichnet!' : pct >= 60 ? 'Gut gemacht!' : 'Weitermachen – du schaffst das!';
+
+  document.getElementById(`score-${containerId}`).innerHTML = `
+    <div class="score-banner">
+      <div style="font-size:3rem;">${emoji}</div>
+      <h2>${correct} / ${total} richtig (${pct}%)</h2>
+      <p>${msg}</p>
+      <button class="btn btn-primary" style="margin-top:1rem;" onclick="resetQuiz('${containerId}')">
+        🔄 Nochmal versuchen
+      </button>
+    </div>
+  `;
+}
+
+// ════════════════════════════════════════════════════════════
+//  QUIZ ZURÜCKSETZEN
+// ════════════════════════════════════════════════════════════
+function resetQuiz(containerId) {
+  Object.keys(currentAnswers).forEach(k => { if (k.startsWith(containerId)) delete currentAnswers[k]; });
+  document.getElementById(containerId).innerHTML = '';
+  if (containerId === 'json-quiz-section') {
+    document.querySelectorAll('.topic-item').forEach(el => el.classList.remove('selected'));
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+//  PDF HOCHLADEN & CLAUDE API AUFRUFEN
+// ════════════════════════════════════════════════════════════
+async function handlePdfUpload(event) {
+  const file = event.target.files[0];
+  if (!file || file.type !== 'application/pdf') {
+    showPdfStatus('error', '❌ Bitte eine gültige PDF-Datei auswählen.');
+    return;
+  }
+
+  showPdfStatus('loading', `⏳ Lese "${file.name}" und generiere Fragen mit KI...`);
+
+  try {
+    // ── Schritt 1: PDF als Base64 lesen ──
+    // FileReader liest die Datei lokal im Browser – keine Upload nötig!
+    const base64Data = await readFileAsBase64(file);
+
+    // ── Schritt 2: Anthropic API aufrufen ──
+    // Wir schicken die PDF direkt an Claude und bitten um Fragen
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 2000,
+        messages: [{
+          role: "user",
+          content: [
+            {
+              // PDF als Dokument übergeben
+              type: "document",
+              source: {
+                type: "base64",
+                media_type: "application/pdf",
+                data: base64Data
+              }
+            },
+            {
+              type: "text",
+              // Prompt: KI soll JSON mit Fragen zurückgeben
+              text: `Lies dieses Dokument und erstelle daraus 5-8 Lernfragen auf Deutsch.
+Antworte NUR mit einem JSON-Objekt in diesem Format (kein Markdown, keine Erklärung davor):
+{
+  "topic": "Name des Themas aus dem Dokument",
+  "questions": [
+    {
+      "question": "Frage auf Deutsch?",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "correct": 0,
+      "explanation": "Kurze Erklärung warum diese Antwort richtig ist"
+    }
+  ]
+}
+Wichtig: 'correct' ist der Index (0-3) der richtigen Antwort in options.`
+            }
+          ]
+        }]
+      })
+    });
+
+    if (!response.ok) throw new Error(`API-Fehler: ${response.status}`);
+
+    const data = await response.json();
+    const rawText = data.content.map(c => c.text || '').join('');
+
+    // ── Schritt 3: JSON aus der Antwort parsen ──
+    // Backticks entfernen falls vorhanden
+    const cleanText = rawText.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(cleanText);
+
+    showPdfStatus('success', `✅ ${parsed.questions.length} Fragen zu "${parsed.topic}" generiert!`);
+    renderQuiz(parsed.questions, 'pdf-quiz-section');
+
+  } catch (err) {
+    console.error(err);
+    showPdfStatus('error', `❌ Fehler: ${err.message} – Bitte überprüfe deine Internetverbindung.`);
+  }
+}
+
+// ── Hilfsfunktion: Datei als Base64 lesen ──
+function readFileAsBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(',')[1]); // Nur der Base64-Teil
+    reader.onerror = () => reject(new Error('Datei konnte nicht gelesen werden'));
+    reader.readAsDataURL(file);
+  });
+}
+
+// ── Status-Nachricht im PDF-Bereich anzeigen ──
+function showPdfStatus(type, message) {
+  const el = document.getElementById('pdf-status');
+  if (type === 'loading') {
+    el.innerHTML = `<div class="loader"><div class="spinner"></div><span>${message}</span></div>`;
+  } else if (type === 'success') {
+    el.innerHTML = `<p style="color:var(--success);margin-top:0.75rem;">${message}</p>`;
+  } else {
+    el.innerHTML = `<div class="error">${message}</div>`;
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+//  DRAG & DROP für Upload-Zone
+// ════════════════════════════════════════════════════════════
+function setupDragDrop() {
+  const zone = document.getElementById('upload-zone');
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      document.getElementById('pdf-input').files = e.dataTransfer.files;
+      handlePdfUpload({ target: { files: [file] } });
+    }
+  });
+}
+
+// ════════════════════════════════════════════════════════════
+//  JSON EDITOR: Änderungen übernehmen
+// ════════════════════════════════════════════════════════════
+function applyJsonEdit() {
+  const statusEl = document.getElementById('json-status');
+  try {
+    const parsed = JSON.parse(document.getElementById('json-editor').value);
+    if (!parsed.topics || !Array.isArray(parsed.topics)) {
+      throw new Error('"topics" Array fehlt!');
+    }
+    currentData = parsed;
+    renderTopics();
+    // Quiz zurücksetzen
+    document.getElementById('json-quiz-section').innerHTML = '';
+    statusEl.style.color = 'var(--success)';
+    statusEl.textContent = '✅ Übernommen! Wechsle zu "JSON-Themen".';
+  } catch (e) {
+    statusEl.style.color = 'var(--danger)';
+    statusEl.textContent = '❌ JSON-Fehler: ' + e.message;
+  }
+}
+
+function resetJson() {
+  currentData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+  document.getElementById('json-editor').value = JSON.stringify(currentData, null, 2);
+  document.getElementById('json-status').textContent = '🔄 Zurückgesetzt.';
+  renderTopics();
+}
+</script>
+</body>
+</html>
