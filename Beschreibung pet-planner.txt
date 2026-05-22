@@ -1,0 +1,289 @@
+Projektstruktur & Zusammenspiel
+
+Die Webseite besteht aus 3 HTML-Seiten, die alle dieselbe style.css verwenden und jeweils eigene JavaScript-Dateien laden:
+
+index.html  →  weather.js + streak.js
+
+planner.html  →  planner.js
+
+encyclopedia.html  →  encyclopedia.js + map.js
+
+
+
+Seite 1: Wetter & Aktivitäten
+
+fetch – API-Anfrage
+Das Herzstück der Seite. fetch() schickt eine Anfrage ans Internet und wartet auf eine Antwort:
+javascript
+// SCHRITT 1: Stadtname → Koordinaten (Geocoding)
+const geoAntwort = await fetch(
+  `https://geocoding-api.open-meteo.com/v1/search?name=Wien`
+);
+const geoDaten = await geoAntwort.json(); // Text → JavaScript-Objekt
+
+
+// SCHRITT 2: Koordinaten → Wetterdaten
+
+const wetterAntwort = await fetch(
+  `https://api.open-meteo.com/v1/forecast?latitude=48.2&longitude=16.3`
+);
+const wetterDaten = await wetterAntwort.json();
+async/await bedeutet: warten auf die Antwort bevor man weitermacht – weil das Internet Zeit braucht.
+
+
+Arrays – Aktivitätenlisten
+
+javascript
+// Array = Liste von Objekten
+const aktivitaetenDraussen = [
+  { titel: "Spaziergang", emoji: "🌳", beschreibung: "Frische Luft!" },
+  { titel: "Fetch spielen", emoji: "🎾", beschreibung: "Ball werfen!" },
+  // ... weitere Einträge
+];
+
+
+// Je nach Temperatur das richtige Array wählen
+
+if (temp >= 15) {
+    aktivitaeten = aktivitaetenDraussen; // warm → raus
+} else {
+    aktivitaeten = aktivitaetenDrinnen;  // kalt → drinnen
+}
+
+
+DOM-Manipulation – Karten dynamisch erstellen
+javascript
+
+auswahl.forEach((aktivitaet, index) => {
+  // 1. Neues div-Element erstellen
+  const karte = document.createElement('div');
+
+
+  // 2. CSS-Klasse hinzufügen
+
+  karte.className = 'karte';
+
+
+  // 3. Inhalt befüllen
+
+  karte.innerHTML = `
+    <div>${aktivitaet.emoji}</div>
+    <div>${aktivitaet.titel}</div>
+  `;
+
+  // 4. In die Seite einfügen
+
+  liste.appendChild(karte);
+});
+
+Ohne DOM-Manipulation wäre die Seite leer – erst JavaScript baut die Karten zur Laufzeit!
+
+
+
+📅 Seite 2: Weekend Planner
+Array mischen (Shuffle-Algorithmus)
+
+javascript
+function arrayMischen(array) {
+  const kopie = [...array]; // Kopie erstellen
+
+  // Fisher-Yates Algorithmus: von hinten nach vorne tauschen
+
+  for (let i = kopie.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1)); // Zufälliger Index
+    [kopie[i], kopie[j]] = [kopie[j], kopie[i]];   // Tauschen
+  }
+  return kopie;
+}
+
+// Ergebnis: jedes Mal eine andere Reihenfolge!
+
+const gemischt = arrayMischen(alleAktivitaeten);
+const samstag = gemischt.slice(0, 4); // Erste 4
+const sonntag = gemischt.slice(4, 8); // Nächste 4
+
+
+
+DOM-Knoten löschen & neu aufbauen
+
+javascript
+function planAnzeigen(plan) {
+  const bereich = document.getElementById('plan-bereich');
+
+  // Alten Inhalt LÖSCHEN
+
+  bereich.innerHTML = '';
+
+  // Neuen Inhalt ERSTELLEN und EINFÜGEN
+
+  bereich.innerHTML = `
+    <h2>Wochenendplan für ${plan.tierName}!</h2>
+    ...
+  `;
+}
+
+
+
+📚 Seite 3: Tier-Lexikon
+
+fetch mit externer API (Dog/Cat API)
+
+javascript
+async function zufaelligeHunderasse() {
+  // API-Anfrage: gibt zufällige Hundebilder + Rassen-Info zurück
+  const antwort = await fetch(
+    'https://api.thedogapi.com/v1/images/search?has_breeds=1&limit=6'
+  );
+  const bilder = await antwort.json();
+
+  // Array-Methode .filter(): nur Bilder MIT Rassen-Info behalten
+
+  const rassen = bilder
+    .filter(b => b.breeds.length > 0)
+
+    // Array-Methode .map(): Daten umformen
+    .map(b => ({ ...b.breeds[0], bild_url: b.url }));
+}
+Favoriten mit localStorage
+javascript
+// SPEICHERN: Objekt → Text → localStorage
+favoriten.push(neueRasse);
+localStorage.setItem('petday_favoriten', JSON.stringify(favoriten));
+
+
+// LADEN: Text → Objekt
+
+const favoriten = JSON.parse(
+  localStorage.getItem('petday_favoriten') || '[]'
+);
+localStorage ist wie ein Mini-Tagebuch im Browser – die Daten bleiben auch nach dem Schließen erhalten!
+
+
+
+
+🏆 Gadget 1: Activity Streak (streak.js)
+
+javascript
+function streakBerechnen() {
+  const aktivitaeten = JSON.parse(
+    localStorage.getItem('petday_aktivitaeten') || '[]'
+  );
+  
+  let streak = 0;
+  let pruefDatum = new Date(); // Heute
+  
+  // Rückwärts durch die Tage gehen
+  for (let i = 0; i < 365; i++) {
+    const datumString = pruefDatum.toISOString().split('T')[0]; // "2026-05-21"
+    
+    if (aktivitaeten.includes(datumString)) {
+      streak++; // Tag gefunden → zählen
+    } else if (i > 0) {
+      break;    // Lücke → aufhören
+    }
+    
+    pruefDatum.setDate(pruefDatum.getDate() - 1); // Einen Tag zurück
+  }
+  return streak;
+}
+
+
+
+🗺️ Gadget 2: Tierfreundliche Orte (map.js)
+
+Leaflet.js – Karte erstellen
+javascript
+// Karte initialisieren
+const karte = L.map('karte').setView([48.2082, 16.3738], 13);
+
+// OpenStreetMap-Kartenmaterial laden
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(karte);
+
+// Marker hinzufügen (DOM der Karte)
+L.marker([48.2082, 16.3738])
+  .bindPopup('<b>📍 Mein Standort</b>')
+  .addTo(karte);
+
+
+
+Overpass API – Orte suchen
+javascript
+// Overpass = Suchmaschine für OpenStreetMap
+const query = `
+  [out:json];
+  node["amenity"="veterinary"](around:3000, 48.2, 16.3);
+  out body 20;
+`;
+
+const antwort = await fetch('https://overpass-api.de/api/interpreter', {
+  method: 'POST',
+  body: query,
+});
+const daten = await antwort.json();
+// daten.elements = Array aller gefundenen Tierärzte
+
+
+
+🎨 CSS – Warum eine globale style.css?
+css
+/* CSS-Variablen: Farben einmal definieren, überall verwenden */
+:root {
+  --orange: #FF6B35;
+  --gelb:   #FFD93D;
+  --pink:   #FF6B9D;
+}
+
+/* Überall im CSS einfach var(--orange) verwenden */
+.btn-orange { background: var(--orange); }
+.nav-links a.aktiv { background: var(--orange); }
+Eine CSS-Datei für alle 3 Seiten → konsistentes Design, weniger Wiederholung!
+
+
+
+🔑 Wichtigste JavaScript-Konzepte zusammengefasst
+
+Konzept	=> Wo verwendet => Was es macht
+
+fetch + async/await	weather.js, encyclopedia.js	Daten vom Internet holen
+Arrays + .filter() .map()	weather.js, planner.js	Listen verarbeiten
+document.createElement()	überall	Neue HTML-Elemente bauen
+appendChild()	überall	Element in die Seite einfügen
+innerHTML = ''	überall	Inhalt löschen
+localStorage	streak.js, encyclopedia.js	Daten im Browser speichern
+JSON.stringify/parse	streak.js, encyclopedia.js	Objekte speichern/laden
+
+
+
+Idee & Ablauf – PetDay Planner
+
+Die Idee
+
+Viele Tierbesitzer fragen sich täglich: "Was machen wir heute?" – und das hängt stark vom Wetter ab. Die Idee war eine App zu bauen die Wetter, Tierinfos und Planung in einer Webseite kombiniert, damit Tierbesitzer schnell und einfach ihren Tag oder ihr Wochenende planen können.
+Warum dieser Ablauf?
+
+Seite 1 – Wetter zuerst
+Das Wetter ist die Grundlage für alles. Erst wenn man weiß ob es warm, kalt oder regnerisch ist, kann man sinnvolle Aktivitäten vorschlagen. Deshalb ist die Wetterseite die Startseite.
+
+Seite 2 – Planner danach
+Wenn man das Wetter kennt, kann man vorausplanen. Der Wochenendplanner lässt den User sein Tier und seine Lieblingsmarken eingeben und generiert dann einen personalisierten Plan – das macht die App nützlich und individuell.
+
+Seite 3 – Lexikon als Nachschlagewerk
+Die dritte Seite ist informativer Inhalt – man kann Rassen entdecken, Favoriten speichern und tierfreundliche Orte in der Nähe finden. Das ergänzt die App mit echtem Mehrwert über den Alltag hinaus.
+
+Die technische Logik dahinter
+Der Ablauf folgt einem einfachen Prinzip:
+Daten holen → Verarbeiten → Anzeigen
+API (Internet) → fetch() → Array filtern → DOM aufbauen → User sieht Ergebnis
+Jede Seite macht genau das, nur mit anderen Daten und anderem Ziel.
+
+
+
+
+
+Warum diese Technologien?
+Technologie	Warum
+fetch	Echte Live-Daten statt hartcodierter Inhalte
+Arrays	Viele Aktivitäten/Rassen flexibel verwalten
+DOM-Manipulation	Seite reagiert dynamisch ohne Neuladen
+localStorage	Daten bleiben gespeichert ohne Server
+OpenStreetMap	Kostenlos, keine Registrierung nötig
