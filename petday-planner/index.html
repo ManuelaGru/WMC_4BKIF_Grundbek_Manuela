@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PetDay Planner – Wetter & Aktivitäten</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Leaflet CSS für die Karte (wird auf dieser Seite für den Streak genutzt) -->
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════
+       NAVIGATION (gleich auf allen Seiten)
+       ═══════════════════════════════════ -->
+  <nav>
+    <div class="nav-inner">
+      <!-- Logo -->
+      <a href="index.html" class="nav-logo">
+        <span>🐾</span> PetDay Planner
+      </a>
+
+      <!-- Navigations-Links -->
+      <ul class="nav-links">
+        <li><a href="index.html" class="aktiv">🌤️ Wetter</a></li>
+        <li><a href="planner.html">📅 Planner</a></li>
+        <li><a href="encyclopedia.html">📚 Lexikon</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════
+       HAUPT-INHALT
+       ═══════════════════════════════════ -->
+  <main>
+
+    <!-- Titel -->
+    <h1 class="seiten-titel">🌤️ Wetter & Aktivitäten</h1>
+    <p class="seiten-untertitel">Was könnt ihr heute zusammen unternehmen?</p>
+
+    <!-- ── Obere Leiste: Standort + Einheit-Toggle ── -->
+    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+
+      <!-- Standort-Eingabe -->
+      <div style="display: flex; gap: 0.7rem; align-items: center; flex: 1; min-width: 250px;">
+        <input type="text" id="stadt-eingabe" placeholder="Stadt eingeben... z.B. Wien" style="max-width: 280px;" />
+        <button class="btn btn-orange" onclick="wetterLaden()">🔍 Suchen</button>
+        <button class="btn btn-grau" onclick="standortErmitteln()" title="Meinen Standort verwenden">📍</button>
+      </div>
+
+      <!-- °C / °F Toggle -->
+      <div class="toggle-container">
+        <span>°C</span>
+        <label class="toggle">
+          <input type="checkbox" id="einheit-toggle" onchange="einheitWechseln()" />
+          <span class="toggle-slider"></span>
+        </label>
+        <span>°F</span>
+      </div>
+    </div>
+
+    <!-- ── Wetter-Karte (wird per JS befüllt) ── -->
+    <div id="wetter-bereich">
+      <!-- Platzhalter solange noch nichts geladen ist -->
+      <div class="leer-zustand karte">
+        <span class="emoji">🌍</span>
+        <p>Gib eine Stadt ein oder nutze deinen Standort!</p>
+      </div>
+    </div>
+
+    <!-- ── Aktivitäten-Bereich ── -->
+    <div id="aktivitaeten-bereich" style="display: none; margin-top: 2rem;">
+      <h2 style="font-family: 'Fredoka One', cursive; font-size: 1.8rem; margin-bottom: 1rem;">
+        <span id="aktivitaet-emoji">🎾</span> Aktivitäten für heute
+      </h2>
+      <p style="color: #888; margin-bottom: 1.2rem;" id="aktivitaet-hinweis"></p>
+
+      <!-- Grid mit Aktivitäts-Karten -->
+      <div class="grid-3" id="aktivitaeten-liste">
+        <!-- Wird per JS befüllt -->
+      </div>
+    </div>
+
+    <!-- ── Activity Streak ── -->
+    <div style="margin-top: 2.5rem;">
+      <h2 style="font-family: 'Fredoka One', cursive; font-size: 1.8rem; margin-bottom: 1rem;">
+        🏆 Activity Streak
+      </h2>
+
+      <div class="karte karte-gelb" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+        <div class="streak-box">
+          <span>🔥</span>
+          <div>
+            <div class="streak-zahl" id="streak-zahl">0</div>
+            <div style="font-size: 0.8rem; font-weight: 600;">Tage in Folge</div>
+          </div>
+        </div>
+
+        <div>
+          <p style="font-weight: 700; margin-bottom: 0.3rem;">Hast du heute eine Aktivität gemacht?</p>
+          <p style="color: #888; font-size: 0.9rem;" id="letzter-tag-text">Noch keine Aktivität eingetragen.</p>
+        </div>
+
+        <div style="display: flex; gap: 0.7rem; flex-wrap: wrap;">
+          <button class="btn btn-gruen" onclick="aktivitaetEintragen()">✅ Ja, heute erledigt!</button>
+          <button class="btn btn-grau" onclick="streakZuruecksetzen()">🗑️ Zurücksetzen</button>
+        </div>
+      </div>
+
+      <!-- Streak-Kalender (letzte 7 Tage) -->
+      <div style="margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;" id="streak-kalender">
+        <!-- Wird per JS befüllt -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── Footer ── -->
+  <footer>
+    Made with <span>❤️</span> für alle Tierfreunde • PetDay Planner
+  </footer>
+
+  <!-- JavaScript einbinden -->
+  <script src="weather.js"></script>
+  <script src="streak.js"></script>
+
+</body>
+</html>

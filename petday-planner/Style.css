@@ -1,0 +1,407 @@
+/* ===========================
+   PetDay Planner – style.css
+   Globale Styles für alle Seiten
+   =========================== */
+
+/* Google Fonts importieren */
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap');
+
+/* ── CSS Variablen (Farben, Abstände) ── */
+:root {
+  --gelb:       #FFD93D;
+  --orange:     #FF6B35;
+  --pink:       #FF6B9D;
+  --blau:       #4ECDC4;
+  --lila:       #C77DFF;
+  --gruen:      #95D5B2;
+  --weiss:      #FFFEF7;
+  --dunkel:     #2D2D2D;
+  --grau:       #F0EDE4;
+  --schatten:   0 4px 20px rgba(0,0,0,0.12);
+  --radius:     20px;
+  --radius-sm:  12px;
+}
+
+/* ── Reset & Basis ── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background-color: var(--weiss);
+  color: var(--dunkel);
+  min-height: 100vh;
+  /* Gepunktetes Hintergrundmuster */
+  background-image: radial-gradient(circle, #e0d8c8 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* ── Navigation ── */
+nav {
+  background: white;
+  box-shadow: var(--schatten);
+  padding: 0 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 4px solid var(--gelb);
+}
+
+.nav-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+}
+
+/* Logo in der Navigation */
+.nav-logo {
+  font-family: 'Fredoka One', cursive;
+  font-size: 1.7rem;
+  color: var(--orange);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.nav-logo span {
+  font-size: 1.8rem; /* Emoji etwas größer */
+}
+
+/* Navigations-Links */
+.nav-links {
+  display: flex;
+  gap: 0.5rem;
+  list-style: none;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--dunkel);
+  font-weight: 700;
+  padding: 0.5rem 1.1rem;
+  border-radius: 50px; /* Pillenform */
+  transition: all 0.2s ease;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* Hover-Effekt für Nav-Links */
+.nav-links a:hover {
+  background: var(--gelb);
+  transform: translateY(-2px);
+}
+
+/* Aktiver Link wird hervorgehoben */
+.nav-links a.aktiv {
+  background: var(--orange);
+  color: white;
+}
+
+/* ── Haupt-Container ── */
+main {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+}
+
+/* ── Seitentitel ── */
+.seiten-titel {
+  font-family: 'Fredoka One', cursive;
+  font-size: 2.5rem;
+  color: var(--dunkel);
+  margin-bottom: 0.3rem;
+}
+
+.seiten-untertitel {
+  color: #888;
+  font-size: 1.05rem;
+  margin-bottom: 2rem;
+}
+
+/* ── Karten (Cards) ── */
+.karte {
+  background: white;
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--schatten);
+  /* Dezenter unterer Rand für 3D-Effekt */
+  border-bottom: 4px solid rgba(0,0,0,0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.karte:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+}
+
+/* Karten mit Farb-Akzent oben */
+.karte-gelb  { border-top: 5px solid var(--gelb);  }
+.karte-orange{ border-top: 5px solid var(--orange); }
+.karte-pink  { border-top: 5px solid var(--pink);  }
+.karte-blau  { border-top: 5px solid var(--blau);  }
+.karte-lila  { border-top: 5px solid var(--lila);  }
+.karte-gruen { border-top: 5px solid var(--gruen); }
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.7rem 1.5rem;
+  border: none;
+  border-radius: 50px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+/* Button-Farben */
+.btn-orange { background: var(--orange); color: white; }
+.btn-gelb   { background: var(--gelb);   color: var(--dunkel); }
+.btn-pink   { background: var(--pink);   color: white; }
+.btn-blau   { background: var(--blau);   color: white; }
+.btn-lila   { background: var(--lila);   color: white; }
+.btn-gruen  { background: var(--gruen);  color: var(--dunkel); }
+.btn-grau   { background: var(--grau);   color: var(--dunkel); }
+
+/* ── Eingabefelder ── */
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select {
+  width: 100%;
+  padding: 0.8rem 1.2rem;
+  border: 2px solid #e0ddd4;
+  border-radius: var(--radius-sm);
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  color: var(--dunkel);
+  background: white;
+  transition: border-color 0.2s ease;
+  outline: none;
+}
+
+input:focus, select:focus {
+  border-color: var(--orange);
+  box-shadow: 0 0 0 3px rgba(255,107,53,0.15);
+}
+
+/* ── Labels ── */
+label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  font-size: 0.95rem;
+  color: var(--dunkel);
+}
+
+/* ── Grid-Layouts ── */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+/* Auf kleinen Bildschirmen 1 Spalte */
+@media (max-width: 768px) {
+  .grid-2, .grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .nav-links a {
+    padding: 0.4rem 0.7rem;
+    font-size: 0.85rem;
+  }
+
+  .seiten-titel {
+    font-size: 1.8rem;
+  }
+}
+
+/* ── Badge / Tag ── */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.8rem;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.badge-orange { background: #FFE5DA; color: var(--orange); }
+.badge-blau   { background: #D9F5F3; color: #2a9d8f; }
+.badge-pink   { background: #FFE0EE; color: #d63384; }
+.badge-gruen  { background: #D4EFE0; color: #2d6a4f; }
+
+/* ── Ladeanimation ── */
+.lade-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--grau);
+  border-top-color: var(--orange);
+  border-radius: 50%;
+  animation: drehen 0.8s linear infinite;
+  margin: 2rem auto;
+}
+
+@keyframes drehen {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Leere Zustände (wenn nichts da ist) ── */
+.leer-zustand {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #aaa;
+}
+
+.leer-zustand .emoji {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+/* ── Animationen ── */
+
+/* Einblenden von oben */
+@keyframes einblenden-oben {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Einblenden von unten */
+@keyframes einblenden-unten {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Wackeln (für Fehler oder Aufmerksamkeit) */
+@keyframes wackeln {
+  0%, 100% { transform: translateX(0); }
+  25%       { transform: translateX(-5px); }
+  75%       { transform: translateX(5px); }
+}
+
+.animiert       { animation: einblenden-unten 0.4s ease both; }
+.animiert-oben  { animation: einblenden-oben  0.4s ease both; }
+
+/* ── Footer ── */
+footer {
+  text-align: center;
+  padding: 2rem;
+  margin-top: 4rem;
+  color: #aaa;
+  font-size: 0.9rem;
+  border-top: 2px dashed #e0ddd4;
+}
+
+footer span {
+  color: var(--orange);
+}
+
+/* ── °C/°F Toggle ── */
+.toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+}
+
+.toggle {
+  position: relative;
+  width: 56px;
+  height: 28px;
+}
+
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: var(--grau);
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  left: 3px;
+  top: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.3s;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.toggle input:checked + .toggle-slider {
+  background: var(--orange);
+}
+
+.toggle input:checked + .toggle-slider::before {
+  transform: translateX(28px);
+}
+
+/* ── Streak-Anzeige ── */
+.streak-box {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: linear-gradient(135deg, #FFD93D, #FF6B35);
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border-radius: var(--radius-sm);
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+.streak-box .streak-zahl {
+  font-family: 'Fredoka One', cursive;
+  font-size: 2rem;
+  line-height: 1;
+}

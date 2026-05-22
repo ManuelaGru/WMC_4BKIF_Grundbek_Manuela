@@ -1,0 +1,291 @@
+{
+  "hunde": [
+    {
+      "id": "labrador",
+      "name": "Labrador Retriever",
+      "herkunft": "Kanada",
+      "groesse": "Groß",
+      "gewicht": "25–36 kg",
+      "leben": "10–12 Jahre",
+      "charakter": ["Freundlich", "Aktiv", "Sanft"],
+      "beschreibung": "Einer der beliebtesten Familienhunde weltweit. Sehr lernwillig, kinderlieb und ideal als Blindenhund.",
+      "apiName": "labrador"
+    },
+    {
+      "id": "golden",
+      "name": "Golden Retriever",
+      "herkunft": "Schottland",
+      "groesse": "Groß",
+      "gewicht": "25–34 kg",
+      "leben": "10–12 Jahre",
+      "charakter": ["Geduldig", "Zuverlässig", "Intelligent"],
+      "beschreibung": "Sanfter Familienfreund mit goldenem Fell. Ideal als Therapie- und Blindenhund.",
+      "apiName": "retriever/golden"
+    },
+    {
+      "id": "bulldog",
+      "name": "Bulldogge",
+      "herkunft": "England",
+      "groesse": "Mittel",
+      "gewicht": "18–25 kg",
+      "leben": "8–10 Jahre",
+      "charakter": ["Ruhig", "Mutig", "Freundlich"],
+      "beschreibung": "Trotz rauem Aussehen sehr sanft und liebevoll. Perfekt für ruhigere Haushalte.",
+      "apiName": "bulldog/english"
+    },
+    {
+      "id": "beagle",
+      "name": "Beagle",
+      "herkunft": "England",
+      "groesse": "Klein",
+      "gewicht": "9–11 kg",
+      "leben": "12–15 Jahre",
+      "charakter": ["Neugierig", "Fröhlich", "Sturköpfig"],
+      "beschreibung": "Kleiner Jagdhund mit großer Nase. Sehr gesellig, braucht viel Bewegung.",
+      "apiName": "beagle"
+    },
+    {
+      "id": "poodle",
+      "name": "Pudel",
+      "herkunft": "Deutschland",
+      "groesse": "Variabel",
+      "gewicht": "3–30 kg",
+      "leben": "12–15 Jahre",
+      "charakter": ["Intelligent", "Aktiv", "Stolz"],
+      "beschreibung": "Einer der intelligentesten Hunde. Hypoallergen und sehr lernfreudig.",
+      "apiName": "poodle"
+    },
+    {
+      "id": "husky",
+      "name": "Siberian Husky",
+      "herkunft": "Sibirien",
+      "groesse": "Mittel",
+      "gewicht": "16–27 kg",
+      "leben": "12–14 Jahre",
+      "charakter": ["Energisch", "Freundlich", "Unabhängig"],
+      "beschreibung": "Ausdauernder Schlittenhund mit Wolfsoptik. Braucht sehr viel Bewegung und Beschäftigung.",
+      "apiName": "husky"
+    },
+    {
+      "id": "shepherd",
+      "name": "Deutscher Schäferhund",
+      "herkunft": "Deutschland",
+      "groesse": "Groß",
+      "gewicht": "22–40 kg",
+      "leben": "9–13 Jahre",
+      "charakter": ["Loyal", "Mutig", "Intelligent"],
+      "beschreibung": "Vielseitiger Arbeitshund. Ideal als Polizei-, Rettungs- und Familienhund.",
+      "apiName": "germanshepherd"
+    },
+    {
+      "id": "boxer",
+      "name": "Boxer",
+      "herkunft": "Deutschland",
+      "groesse": "Groß",
+      "gewicht": "25–32 kg",
+      "leben": "10–12 Jahre",
+      "charakter": ["Verspielt", "Treu", "Energisch"],
+      "beschreibung": "Lebhafter und verspielter Hund. Sehr kinderlieb und schutzinstinktiv.",
+      "apiName": "boxer"
+    },
+    {
+      "id": "dachshund",
+      "name": "Dackel",
+      "herkunft": "Deutschland",
+      "groesse": "Klein",
+      "gewicht": "4–9 kg",
+      "leben": "12–16 Jahre",
+      "charakter": ["Mutig", "Neugierig", "Sturköpfig"],
+      "beschreibung": "Der typisch deutsche Hund. Klein aber mutig – bekannt für seinen langen Körper.",
+      "apiName": "dachshund"
+    },
+    {
+      "id": "chihuahua",
+      "name": "Chihuahua",
+      "herkunft": "Mexiko",
+      "groesse": "Sehr klein",
+      "gewicht": "1–3 kg",
+      "leben": "14–16 Jahre",
+      "charakter": ["Lebhaft", "Anhänglich", "Alert"],
+      "beschreibung": "Kleinste Hunderasse der Welt. Sehr anhänglich und temperamentvoll.",
+      "apiName": "chihuahua"
+    },
+    {
+      "id": "pug",
+      "name": "Mops",
+      "herkunft": "China",
+      "groesse": "Klein",
+      "gewicht": "6–9 kg",
+      "leben": "12–15 Jahre",
+      "charakter": ["Verspielt", "Charmant", "Ruhig"],
+      "beschreibung": "Geselliger Stubenhund mit faltigem Gesicht. Liebt Menschen und Kuscheln.",
+      "apiName": "pug"
+    },
+    {
+      "id": "bordercollie",
+      "name": "Border Collie",
+      "herkunft": "Schottland",
+      "groesse": "Mittel",
+      "gewicht": "14–20 kg",
+      "leben": "12–15 Jahre",
+      "charakter": ["Intelligent", "Energisch", "Loyal"],
+      "beschreibung": "Gilt als intelligenteste Hunderasse. Braucht viel geistige und körperliche Auslastung.",
+      "apiName": "collie/border"
+    },
+    {
+      "id": "dalmatiner",
+      "name": "Dalmatiner",
+      "herkunft": "Kroatien",
+      "groesse": "Groß",
+      "gewicht": "20–32 kg",
+      "leben": "11–13 Jahre",
+      "charakter": ["Aktiv", "Verspielt", "Sensibel"],
+      "beschreibung": "Bekannt durch seine Tupfen. Sehr aktiver Hund, braucht viel Auslauf.",
+      "apiName": "dalmatian"
+    },
+    {
+      "id": "rottweiler",
+      "name": "Rottweiler",
+      "herkunft": "Deutschland",
+      "groesse": "Groß",
+      "gewicht": "35–60 kg",
+      "leben": "8–10 Jahre",
+      "charakter": ["Selbstsicher", "Loyal", "Mutig"],
+      "beschreibung": "Kräftiger Schutzhund mit ruhigem Wesen. Braucht konsequente Erziehung.",
+      "apiName": "rottweiler"
+    },
+    {
+      "id": "maltese",
+      "name": "Malteser",
+      "herkunft": "Malta",
+      "groesse": "Sehr klein",
+      "gewicht": "2–4 kg",
+      "leben": "12–15 Jahre",
+      "charakter": ["Sanft", "Verspielt", "Anhänglich"],
+      "beschreibung": "Kleiner weißer Hund mit seidigem Fell. Sehr anhänglich und ideal für Wohnungen.",
+      "apiName": "maltese"
+    }
+  ],
+  "katzen": [
+    {
+      "id": "perser",
+      "name": "Perser",
+      "herkunft": "Iran",
+      "groesse": "Mittel",
+      "gewicht": "3–7 kg",
+      "leben": "12–17 Jahre",
+      "charakter": ["Ruhig", "Sanft", "Anhänglich"],
+      "beschreibung": "Ruhige und würdevolle Katze mit langem Fell. Liebt entspannte Wohnungen und viel Pflege."
+    },
+    {
+      "id": "mainecoon",
+      "name": "Maine Coon",
+      "herkunft": "USA",
+      "groesse": "Groß",
+      "gewicht": "4–11 kg",
+      "leben": "12–15 Jahre",
+      "charakter": ["Freundlich", "Verspielt", "Intelligent"],
+      "beschreibung": "Größte Hauskatzenrasse. Sehr sozial, versteht sich gut mit Kindern und Hunden."
+    },
+    {
+      "id": "siamese",
+      "name": "Siamkatze",
+      "herkunft": "Thailand",
+      "groesse": "Mittel",
+      "gewicht": "3–5 kg",
+      "leben": "15–20 Jahre",
+      "charakter": ["Gesprächig", "Sozial", "Intelligent"],
+      "beschreibung": "Sehr kommunikative Katze. Liebt Gesellschaft und unterhält sich mit ihrem Menschen."
+    },
+    {
+      "id": "ragdoll",
+      "name": "Ragdoll",
+      "herkunft": "USA",
+      "groesse": "Groß",
+      "gewicht": "4–9 kg",
+      "leben": "12–15 Jahre",
+      "charakter": ["Sanft", "Entspannt", "Anhänglich"],
+      "beschreibung": "Wird beim Hochnehmen schlaff wie eine Puppe. Extrem sanft und menschenbezogen."
+    },
+    {
+      "id": "british",
+      "name": "Britisch Kurzhaar",
+      "herkunft": "England",
+      "groesse": "Mittel",
+      "gewicht": "4–8 kg",
+      "leben": "14–20 Jahre",
+      "charakter": ["Ruhig", "Ausgeglichen", "Selbständig"],
+      "beschreibung": "Plüschige Katze mit runden Augen. Ruhig und pflegeleicht, gut für Wohnungen."
+    },
+    {
+      "id": "bengal",
+      "name": "Bengalkatze",
+      "herkunft": "USA",
+      "groesse": "Mittel",
+      "gewicht": "3–7 kg",
+      "leben": "12–16 Jahre",
+      "charakter": ["Aktiv", "Verspielt", "Neugierig"],
+      "beschreibung": "Wildkatzen-Look mit Hauskatzen-Charakter. Sehr aktiv und klettert gerne."
+    },
+    {
+      "id": "scottish",
+      "name": "Scottish Fold",
+      "herkunft": "Schottland",
+      "groesse": "Mittel",
+      "gewicht": "3–6 kg",
+      "leben": "11–14 Jahre",
+      "charakter": ["Ruhig", "Anpassungsfähig", "Sanft"],
+      "beschreibung": "Erkennbar an den gefalteten Ohren. Sehr anpassungsfähig und familienfreundlich."
+    },
+    {
+      "id": "abyssinian",
+      "name": "Abessinier",
+      "herkunft": "Äthiopien",
+      "groesse": "Mittel",
+      "gewicht": "3–5 kg",
+      "leben": "14–17 Jahre",
+      "charakter": ["Aktiv", "Neugierig", "Verspielt"],
+      "beschreibung": "Eine der ältesten Katzenrassen. Sehr aktiv, klug und braucht viel Beschäftigung."
+    },
+    {
+      "id": "sphynx",
+      "name": "Sphynx",
+      "herkunft": "Kanada",
+      "groesse": "Mittel",
+      "gewicht": "3–5 kg",
+      "leben": "13–15 Jahre",
+      "charakter": ["Energisch", "Anhänglich", "Neugierig"],
+      "beschreibung": "Die haarlose Katze. Sehr wärmeliebend und anhänglich – sucht immer Körperkontakt."
+    },
+    {
+      "id": "norwegisch",
+      "name": "Norwegische Waldkatze",
+      "herkunft": "Norwegen",
+      "groesse": "Groß",
+      "gewicht": "4–9 kg",
+      "leben": "14–16 Jahre",
+      "charakter": ["Selbständig", "Aktiv", "Freundlich"],
+      "beschreibung": "Robuste Katze für kalte Klimata. Liebt Klettern und hat ein dichtes Fell."
+    },
+    {
+      "id": "birma",
+      "name": "Birma",
+      "herkunft": "Myanmar",
+      "groesse": "Mittel",
+      "gewicht": "3–6 kg",
+      "leben": "12–16 Jahre",
+      "charakter": ["Sanft", "Ruhig", "Sozial"],
+      "beschreibung": "Die heilige Katze von Burma. Sehr sanft, ruhig und menschenbezogen."
+    },
+    {
+      "id": "russischblau",
+      "name": "Russisch Blau",
+      "herkunft": "Russland",
+      "groesse": "Mittel",
+      "gewicht": "3–5 kg",
+      "leben": "15–20 Jahre",
+      "charakter": ["Schüchtern", "Intelligent", "Treu"],
+      "beschreibung": "Elegante Katze mit blaugrauem Fell und grünen Augen. Sehr treu zu ihrer Familie."
+    }
+  ]
+}

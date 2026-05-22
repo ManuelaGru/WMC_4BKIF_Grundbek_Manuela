@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PetDay Planner – Wochenend Planner</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════
+       NAVIGATION
+       ═══════════════════════════════════ -->
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <span>🐾</span> PetDay Planner
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">🌤️ Wetter</a></li>
+        <li><a href="planner.html" class="aktiv">📅 Planner</a></li>
+        <li><a href="encyclopedia.html">📚 Lexikon</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════
+       HAUPT-INHALT
+       ═══════════════════════════════════ -->
+  <main>
+
+    <h1 class="seiten-titel">📅 Wochenend Planner</h1>
+    <p class="seiten-untertitel">Plane ein abwechslungsreiches Wochenende für dich und dein Tier!</p>
+
+    <!-- ── Eingabe-Formular ── -->
+    <div class="karte karte-pink" style="margin-bottom: 2rem;">
+      <h2 style="font-family: 'Fredoka One', cursive; font-size: 1.5rem; margin-bottom: 1.2rem;">
+        🐾 Dein Tier & Lieblingsmarken
+      </h2>
+
+      <div class="grid-2" style="gap: 1.2rem;">
+
+        <!-- Tierart -->
+        <div>
+          <label for="tier-art">Tierart</label>
+          <select id="tier-art" onchange="tierEmojiAktualisieren()">
+            <option value="hund">🐶 Hund</option>
+            <option value="katze">🐱 Katze</option>
+            <option value="kaninchen">🐰 Kaninchen</option>
+            <option value="hamster">🐹 Hamster</option>
+            <option value="vogel">🐦 Vogel</option>
+            <option value="fisch">🐠 Fisch</option>
+            <option value="schildkroete">🐢 Schildkröte</option>
+          </select>
+        </div>
+
+        <!-- Tiername -->
+        <div>
+          <label for="tier-name">Name deines Tieres</label>
+          <input type="text" id="tier-name" placeholder="z.B. Bello, Mimi, ..." />
+        </div>
+
+        <!-- Snack-Marke -->
+        <div>
+          <label for="snack-marke">🍖 Lieblingssnack / -marke</label>
+          <input type="text" id="snack-marke" placeholder="z.B. Purina, Whiskas, ..." />
+        </div>
+
+        <!-- Spielzeug-Marke -->
+        <div>
+          <label for="spielzeug-marke">🎾 Lieblsspielzeug / -marke</label>
+          <input type="text" id="spielzeug-marke" placeholder="z.B. Kong, Trixie, ..." />
+        </div>
+
+        <!-- Futter-Marke -->
+        <div>
+          <label for="futter-marke">🥣 Lieblungsfutter / -marke</label>
+          <input type="text" id="futter-marke" placeholder="z.B. Royal Canin, Hill's, ..." />
+        </div>
+
+        <!-- Besondere Vorlieben -->
+        <div>
+          <label for="vorlieben">💛 Besondere Vorlieben</label>
+          <input type="text" id="vorlieben" placeholder="z.B. mag Wasser, liebt Kuscheln, ..." />
+        </div>
+      </div>
+
+      <!-- Button -->
+      <div style="margin-top: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+        <button class="btn btn-pink" onclick="planErstellen()">
+          ✨ Wochenendplan erstellen!
+        </button>
+        <button class="btn btn-grau" onclick="planNeuMischen()" id="mischen-btn" style="display:none;">
+          🔀 Neu mischen
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Plan-Ausgabe (wird per JS befüllt) ── -->
+    <div id="plan-bereich">
+      <div class="leer-zustand karte">
+        <span class="emoji">📋</span>
+        <p>Füll das Formular aus und klicke auf "Erstellen"!</p>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    Made with <span>❤️</span> für alle Tierfreunde • PetDay Planner
+  </footer>
+
+  <script src="planner.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PetDay Planner – Tier-Lexikon</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Leaflet CSS für die Karte -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    /* Karten-Bereich Styles */
+    #karte {
+      height: 380px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--schatten);
+    }
+    /* Favoriten-Karten */
+    .favorit-karte img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: var(--radius-sm);
+      margin-bottom: 0.7rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════
+       NAVIGATION
+       ═══════════════════════════════════ -->
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <span>🐾</span> PetDay Planner
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">🌤️ Wetter</a></li>
+        <li><a href="planner.html">📅 Planner</a></li>
+        <li><a href="encyclopedia.html" class="aktiv">📚 Lexikon</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════
+       HAUPT-INHALT
+       ═══════════════════════════════════ -->
+  <main>
+
+    <h1 class="seiten-titel">📚 Tier-Lexikon</h1>
+    <p class="seiten-untertitel">Entdecke Hunde- und Katzenrassen sowie tierfreundliche Orte in deiner Nähe!</p>
+
+    <!-- ── Tab-Navigation ── -->
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+      <button class="btn btn-orange" id="tab-hunde" onclick="tabWechseln('hunde')">🐶 Hunderassen</button>
+      <button class="btn btn-grau"   id="tab-katzen" onclick="tabWechseln('katzen')">🐱 Katzenrassen</button>
+      <button class="btn btn-grau"   id="tab-favoriten" onclick="tabWechseln('favoriten')">❤️ Favoriten</button>
+      <button class="btn btn-grau"   id="tab-karte" onclick="tabWechseln('karte')">🗺️ Orte in der Nähe</button>
+    </div>
+
+    <!-- ── HUNDE TAB ── -->
+    <div id="bereich-hunde">
+      <!-- Suche -->
+      <div style="display: flex; gap: 0.7rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+        <input type="text" id="rasse-suche-hund" placeholder="Rasse suchen... z.B. Labrador" style="max-width: 300px;" />
+        <button class="btn btn-orange" onclick="hundeRasseSuchen()">🔍 Suchen</button>
+        <button class="btn btn-gelb"   onclick="zufaelligeHunderasse()">🎲 Zufällige Rasse</button>
+      </div>
+
+      <!-- Ergebnis-Bereich -->
+      <div id="hund-ergebnis">
+        <div class="leer-zustand karte">
+          <span class="emoji">🐶</span>
+          <p>Suche nach einer Hunderasse oder klicke auf "Zufällig"!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── KATZEN TAB (zunächst versteckt) ── -->
+    <div id="bereich-katzen" style="display: none;">
+      <div style="display: flex; gap: 0.7rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+        <input type="text" id="rasse-suche-katze" placeholder="Rasse suchen... z.B. Perser" style="max-width: 300px;" />
+        <button class="btn btn-pink" onclick="katzenRasseSuchen()">🔍 Suchen</button>
+        <button class="btn btn-lila" onclick="zufaelligeKatzenrasse()">🎲 Zufällige Rasse</button>
+      </div>
+
+      <div id="katze-ergebnis">
+        <div class="leer-zustand karte">
+          <span class="emoji">🐱</span>
+          <p>Suche nach einer Katzenrasse oder klicke auf "Zufällig"!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FAVORITEN TAB ── -->
+    <div id="bereich-favoriten" style="display: none;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem;">
+        <h2 style="font-family: 'Fredoka One', cursive; font-size: 1.5rem;">❤️ Meine Favoriten</h2>
+        <button class="btn btn-grau" onclick="allesFavoritenLoeschen()">🗑️ Alle löschen</button>
+      </div>
+      <div class="grid-3" id="favoriten-liste">
+        <!-- Wird per JS befüllt -->
+      </div>
+    </div>
+
+    <!-- ── KARTE TAB ── -->
+    <div id="bereich-karte" style="display: none;">
+      <h2 style="font-family: 'Fredoka One', cursive; font-size: 1.5rem; margin-bottom: 1rem;">
+        🗺️ Tierfreundliche Orte in deiner Nähe
+      </h2>
+
+      <!-- Filter-Buttons -->
+      <div style="display: flex; gap: 0.5rem; margin-bottom: 1.2rem; flex-wrap: wrap;">
+        <button class="btn btn-gruen" onclick="orteAnzeigen('park')" id="btn-park">🌳 Hundeparks</button>
+        <button class="btn btn-grau"  onclick="orteAnzeigen('tierarzt')" id="btn-tierarzt">🏥 Tierärzte</button>
+        <button class="btn btn-grau"  onclick="orteAnzeigen('zoohandlung')" id="btn-zoo">🏪 Zoohandlungen</button>
+      </div>
+
+      <!-- Leaflet-Karte -->
+      <div id="karte"></div>
+
+      <!-- Legende -->
+      <div style="display: flex; gap: 1rem; margin-top: 0.8rem; flex-wrap: wrap; font-size: 0.9rem; color: #666;">
+        <span>🟢 Hundeparks & Grünflächen</span>
+        <span>🔴 Tierärzte</span>
+        <span>🔵 Zoohandlungen</span>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    Made with <span>❤️</span> für alle Tierfreunde • PetDay Planner
+  </footer>
+
+  <!-- Leaflet JS für die Karte -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="encyclopedia.js"></script>
+  <script src="map.js"></script>
+
+</body>
+</html>
