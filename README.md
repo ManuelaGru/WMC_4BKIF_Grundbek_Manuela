@@ -7,8 +7,6 @@ Eine interaktive Webseite für Tierbesitzer, die Wetter, Tierinfos und Wochenend
 
 🔗 **[→ Zur Webseite](https://manuelagru.github.io/WMC_4BKIF_Grundbek_Manuela/petday-planner/)**
 
-petday-planner öffnen mit:
-https://manuelagru.github.io/WMC_4BKIF_Grundbek_Manuela/petday-planner/
 ---
 
 ## 💡 Die Idee
@@ -76,6 +74,8 @@ petday-planner/
 - **Leaflet.js + OpenStreetMap** – Karte (kostenlos, kein Key)
 - **Overpass API** – Tierfreundliche Orte suchen
 
+petday-planner öffnen mit:
+https://manuelagru.github.io/WMC_4BKIF_Grundbek_Manuela/petday-planner/
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # 🃏 Lernmaterial Generator – WMC Projekt
@@ -85,8 +85,6 @@ Ein interaktiver Lernkarten-Generator mit KI-Unterstützung und Quiz-Modus.
 
 🔗 **[→ Zur Webseite](https://manuelagru.github.io/WMC_4BKIF_Grundbek_Manuela/lernkarten.neu/)**
 
-Lernkarten.neu öffnen mit:
-https://manuelagru.github.io/WMC_4BKIF_Grundbek_Manuela/lernkarten.neu/
 ---
 
 ## 💡 Die Idee
@@ -122,6 +120,8 @@ Lernmaterial soll nicht langweilig sein. Die App ermöglicht es, aus eigenen PDF
 - KI-generierte Fragen aus PDF-Inhalt
 - JSON als Datenformat für Lernkarten
 
+Lernkarten.neu öffnen mit:
+https://manuelagru.github.io/WMC_4BKIF_Grundbek_Manuela/lernkarten.neu/
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## 📁 Weitere Projekte
